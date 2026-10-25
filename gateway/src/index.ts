@@ -87,6 +87,7 @@ interface RosMessage {
   op?: string;
   id?: string;
   result?: boolean;
+  values?: { name?: string };
   topic?: string;
   msg?: Record<string, unknown>;
 }
@@ -100,7 +101,8 @@ function onRosMessage(raw: string): void {
   }
 
   if (m.op === "service_response" && m.id === "spawn-turtle2") {
-    console.log(m.result ? "[ros] turtle2 dibuat" : "[ros] turtle2 sudah ada, lanjut");
+    const created = m.result === true && Boolean(m.values?.name);
+    console.log(created ? "[ros] turtle2 dibuat" : "[ros] turtle2 sudah ada, lanjut");
     subscribePose("turtle2");
     return;
   }
